@@ -12,6 +12,10 @@ from app.repository.util.week_util import get_week_boundaries
 bot = telebot.TeleBot(config.TOKEN)
 
 
+def start():
+    bot.polling(none_stop=True)
+
+
 @bot.message_handler(commands=["start"])
 def cmd_start(message):
     subs_service.create_subs(message.chat.id)
@@ -109,6 +113,3 @@ def get_week_events(message):
     print(start_week, end_week)
     print(api.get_events(275938, from_date=start_week, to_date=end_week))
     return None
-
-
-bot.polling(none_stop=True)
