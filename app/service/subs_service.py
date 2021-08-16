@@ -1,5 +1,4 @@
-from typing import List
-from app.repository.subs.subs_types import *
+from app.domain.subs_types import *
 
 subs_dict = dict()
 

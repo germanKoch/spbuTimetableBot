@@ -1,4 +1,4 @@
-class STATE():
+class STATE:
     START = "0"
     ENTER_DIVISION = "1"
     ENTER_LEVEL = "2"
@@ -8,7 +8,7 @@ class STATE():
     COMPLETE = "6"
 
 
-class Subscription():
+class Subscription:
     chat_id: str
     state: str = ""
     division_alias: str = ""

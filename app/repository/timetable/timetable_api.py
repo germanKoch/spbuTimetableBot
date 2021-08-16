@@ -1,6 +1,6 @@
 import spbu
 from spbu.types import *
-from app.repository.timetable.timetable_types import *
+from app.domain.timetable_types import *
 
 
 def map_division(div: SDStudyDivision):

@@ -4,10 +4,10 @@ import telebot
 import telebot.types as types
 
 import app.config as config
-import app.repository.subs.subs_service as subs_service
-from app.repository.subs.subs_types import *
+import app.service.subs_service as subs_service
+from app.domain.subs_types import *
 from app.repository.timetable.timetable_api import api
-from app.repository.util.week_util import get_week_boundaries
+from app.util.week_util import get_week_boundaries
 
 bot = telebot.TeleBot(config.TOKEN)
 
