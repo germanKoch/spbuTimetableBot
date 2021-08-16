@@ -1,22 +1,35 @@
 class STATE:
     START = "0"
-    ENTER_DIVISION = "1"
-    ENTER_LEVEL = "2"
-    ENTER_PROGRAM = "3"
-    ENTER_YEAR = "4"
-    ENTER_GROUP = "5"
-    COMPLETE = "6"
+    SAVED_DIVISION = "1"
+    SAVED_LEVEL = "2"
+    SAVED_PROGRAM = "3"
+    SAVED_YEAR = "4"
+    SAVED_PROGRAM_ID = "5"
+    SAVED_GROUP = "5"
 
 
 class Subscription:
-    chat_id: str
-    state: str = ""
-    division_alias: str = ""
-    level: str = ""
-    program: str = ""
-    year: str = ""
-    program_id: str = ""
-    group_id: int = 0
+    id: int
+    chat_id: int
+    state: str
+    division_alias: str
+    level: str
+    program: str
+    year: str
+    program_id: str
+    group_id: int
+
+    def __init__(self, id: int = None, chat_id: int = None, state: str = None, division_alias: str = None,
+                 level: str = None, program: str = None, year: str = None, program_id: str = None, group_id: int = 0):
+        self.id = id
+        self.chat_id = chat_id
+        self.state = state
+        self.division_alias = division_alias
+        self.level = level
+        self.program = program
+        self.year = year
+        self.program_id = program_id
+        self.group_id = group_id
 
     def __repr__(self):
         return f"Subscription({self.chat_id}, {self.state}, {self.division_alias},{self.level}, {self.program} ,{self.year}, {self.group_id} )"

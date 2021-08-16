@@ -45,12 +45,12 @@ def entering_division(message):
     bot.send_message(message.chat.id, "Отлично! Уровень", reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.ENTER_DIVISION)
+@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_DIVISION)
 def entering_level(message):
     subs_service.set_level(message.chat.id, message.text)
     markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
 
-    subs = subs_service.get_by_id(message.chat.id)
+    subs = subs_service.get_by_chat_id(message.chat.id)
     levels = api.get_levels_by_alias(subs.division_alias)
     programs = next(lev for lev in levels if lev.name == message.text).programs
 
@@ -60,12 +60,12 @@ def entering_level(message):
     bot.send_message(message.chat.id, "Отлично! Программа", reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.ENTER_LEVEL)
+@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_LEVEL)
 def entering_program(message):
     subs_service.set_program(message.chat.id, message.text)
     markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
 
-    subs = subs_service.get_by_id(message.chat.id)
+    subs = subs_service.get_by_chat_id(message.chat.id)
     levels = api.get_levels_by_alias(subs.division_alias)
     programs = next(lev for lev in levels if lev.name == subs.level).programs
     admissions = next(prog for prog in programs if prog.name == subs.program).admissions
@@ -76,10 +76,10 @@ def entering_program(message):
     bot.send_message(message.chat.id, "Отлично! Год", reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.ENTER_PROGRAM)
+@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_PROGRAM)
 def entering_year(message):
     # TODO: сразу ставить program id
-    subs = subs_service.get_by_id(message.chat.id)
+    subs = subs_service.get_by_chat_id(message.chat.id)
     levels = api.get_levels_by_alias(subs.division_alias)
     programs = next(lev for lev in levels if lev.name == subs.level).programs
     admissions = next(prog for prog in programs if prog.name == subs.program).admissions
@@ -96,9 +96,9 @@ def entering_year(message):
     bot.send_message(message.chat.id, "Отлично! Группа", reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.ENTER_YEAR)
+@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_YEAR)
 def entering_group(message):
-    subs = subs_service.get_by_id(message.chat.id)
+    subs = subs_service.get_by_chat_id(message.chat.id)
     groups = api.get_groups_by_program_id(subs.program_id)
     group_id = next(gr for gr in groups if gr.name == message.text).id
 
