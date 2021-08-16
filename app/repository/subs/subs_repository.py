@@ -1,6 +1,7 @@
 from app.domain.subs_types import *
 from app.repository.connection import get_row_query
 from app.repository.connection import update_query
+from app.repository.connection import update_queries
 from app.domain.exception.not_found_exception import NotFoundException
 
 table = "subscription"
@@ -8,7 +9,6 @@ table = "subscription"
 
 def map_subs(row) -> Subscription:
     return Subscription(
-        id=row["id"],
         chat_id=row["chat_id"],
         state=row["state"],
         division_alias=row["division_alias"],
@@ -30,12 +30,9 @@ def get_by_chat_id(chat_id: int) -> Subscription:
 
 
 def create_subs(chat_id: int, state: str):
-    query = f"INSERT INTO {table}(chat_id, state) VALUES (%(chat_id)s, %(state)s)"
-    params = {
-        'chat_id': chat_id,
-        'state': state
-    }
-    update_query(query, params)
+    delete_query = f"DELETE FROM {table} WHERE chat_id={chat_id}"
+    create_query = f"INSERT INTO {table}(chat_id, state) VALUES ({chat_id}, {state})"
+    update_queries([delete_query, create_query])
 
 
 def update_subs(chat_id: int, params: dict):

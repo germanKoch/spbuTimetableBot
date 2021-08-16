@@ -1,5 +1,7 @@
 TOKEN = '1907978319:AAF9ObvJwFekyuFQwuJJTCsS64VI9NTR9Dg'
 
+SPBU_TT_API_REQUEST_TIMEOUT = '20'
+
 DB_NAME = 'postgres'
 DB_USER = 'postgres'
 DB_PASSWORD = 'postgres'

@@ -96,7 +96,7 @@ def entering_year(message):
     bot.send_message(message.chat.id, "Отлично! Группа", reply_markup=markup)
 
 
-@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_YEAR)
+@bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_PROGRAM_ID)
 def entering_group(message):
     subs = subs_service.get_by_chat_id(message.chat.id)
     groups = api.get_groups_by_program_id(subs.program_id)

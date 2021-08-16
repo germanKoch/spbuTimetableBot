@@ -1,4 +1,5 @@
 from app.domain.subs_types import *
+from app.domain.exception.not_found_exception import NotFoundException
 import app.repository.subs.subs_repository as repository
 
 
@@ -6,10 +7,16 @@ def get_by_chat_id(chat_id: int) -> Subscription:
     return repository.get_by_chat_id(chat_id)
 
 
+def get_state(chat_id: int):
+    try:
+        subs = repository.get_by_chat_id(chat_id)
+        return subs.state
+    except NotFoundException:
+        return None
+
+
 def create_subs(chat_id: int):
-    repository.update_subs(chat_id, {
-        'state': STATE.START
-    })
+    repository.create_subs(chat_id, STATE.START)
 
 
 def set_division(chat_id: int, division_alias: str):
