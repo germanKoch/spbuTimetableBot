@@ -1,30 +1,12 @@
 def version_1():
-    return 'a'
+    return 'CREATE TABLE subscription(id bigserial, chat_id bigint, state text, division_alias text, ' \
+           'level text, program text, year text, program_id text, group_id int)'
 
 
 def version_2():
-    return 'b'
+    return "INSERT INTO subscription(chat_id, state, division_alias, level, program, year, program_id, group_id)" \
+           "VALUES (1000, '1', 'PHYS', 'lev', 'prog', '2021', 'prog_id', 100)"
 
 
 def version_3():
-    return '1'
-
-
-def version_4():
-    return '2'
-
-
-def version_5():
-    return '3'
-
-
-def version_6():
-    return '4'
-
-
-def version_7():
-    return '5'
-
-
-def version_8():
-    return 'c'
+    return "DELETE FROM subscription WHERE id=1"
