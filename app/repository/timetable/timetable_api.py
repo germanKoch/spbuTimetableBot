@@ -1,6 +1,30 @@
 import spbu
 from spbu.types import *
+
 from app.domain.timetable_types import *
+
+
+def get_divisions() -> List[Division]:
+    divisions = spbu.studydivisions.get_study_divisions()
+    print(divisions)
+    return list(map(map_division, divisions))
+
+
+def get_levels_by_alias(alias: str) -> List[StudyLevel]:
+    levels = spbu.studydivisions.get_study_levels(alias)
+    print(levels)
+    return list(map(map_level, levels))
+
+
+def get_groups_by_program_id(program_id: int) -> List[Group]:
+    groups = spbu.programs.get_groups(program_id)
+    print(groups)
+    return list(map(map_group, groups))
+
+
+def get_events(group_id: int, from_date: date, to_date: date):
+    response = spbu.groups.get_group_events(group_id=group_id, from_date=from_date, to_date=to_date)
+    return list(map(map_day, response.days))
 
 
 def map_division(div: SDStudyDivision):
@@ -33,33 +57,3 @@ def map_event(event: GEEvent):
 def map_day(day: GEEventsDay):
     events = list(map(map_event, day.day_study_events))
     return Day(day_string=day.day_string, events=events)
-
-
-class TimetableApi:
-
-    def __init__(self):
-        self.divisions_cache = []
-        self.levels_cache = dict()
-
-    def get_divisions(self) -> List[Division]:
-        if len(self.divisions_cache) == 0:
-            divisions = spbu.studydivisions.get_study_divisions()
-            self.divisions_cache = list(map(map_division, divisions))
-        return self.divisions_cache
-
-    def get_levels_by_alias(self, alias: str) -> List[StudyLevel]:
-        if alias not in self.levels_cache:
-            levels = spbu.studydivisions.get_study_levels(alias)
-            self.levels_cache[alias] = list(map(map_level, levels))
-        return self.levels_cache[alias]
-
-    def get_groups_by_program_id(self, program_id: int) -> List[Group]:
-        groups = spbu.programs.get_groups(program_id)
-        return list(map(map_group, groups))
-
-    def get_events(self, group_id: int, from_date: date, to_date: date):
-        response = spbu.groups.get_group_events(group_id=group_id, from_date=from_date, to_date=to_date)
-        return list(map(map_day, response.days))
-
-
-api = TimetableApi()

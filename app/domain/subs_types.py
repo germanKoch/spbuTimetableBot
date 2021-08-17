@@ -15,11 +15,11 @@ class Subscription:
     level: str
     program: str
     year: str
-    program_id: str
+    program_id: int
     group_id: int
 
     def __init__(self, chat_id: int = None, state: str = None, division_alias: str = None,
-                 level: str = None, program: str = None, year: str = None, program_id: str = None, group_id: int = 0):
+                 level: str = None, program: str = None, year: str = None, program_id: int = None, group_id: int = 0):
         self.chat_id = chat_id
         self.state = state
         self.division_alias = division_alias

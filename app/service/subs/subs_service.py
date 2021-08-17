@@ -47,7 +47,7 @@ def set_year(chat_id: int, year: str):
     })
 
 
-def set_program_id(chat_id: int, program_id: str):
+def set_program_id(chat_id: int, program_id: int):
     repository.update_subs(chat_id, {
         'state': STATE.SAVED_PROGRAM_ID,
         'program_id': program_id

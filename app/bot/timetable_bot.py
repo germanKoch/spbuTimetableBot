@@ -4,9 +4,9 @@ import telebot
 import telebot.types as types
 
 import app.config as config
-import app.service.subs_service as subs_service
+import app.service.subs.subs_service as subs_service
+import app.service.timetable.timetable_service as spbu_service
 from app.domain.subs_types import *
-from app.repository.timetable.timetable_api import api
 from app.util.week_util import get_week_boundaries
 
 bot = telebot.TeleBot(config.TOKEN)
@@ -21,7 +21,7 @@ def cmd_start(message):
     subs_service.create_subs(message.chat.id)
     markup = types.ReplyKeyboardMarkup(row_width=2, one_time_keyboard=True)
 
-    divisions = api.get_divisions()
+    divisions = spbu_service.get_divisions()
 
     buttons = list(map(lambda div: types.KeyboardButton(text=div.name), divisions))
     markup.add(*buttons)
@@ -31,13 +31,11 @@ def cmd_start(message):
 
 @bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.START)
 def entering_division(message):
-    divisions = api.get_divisions()
-    alias = next(div for div in divisions if div.name == message.text).alias
+    division = spbu_service.get_division(message.text)
+    subs_service.set_division(message.chat.id, division.alias)
 
-    subs_service.set_division(message.chat.id, alias)
     markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
-
-    levels = api.get_levels_by_alias(alias)
+    levels = spbu_service.get_levels(division.alias)
 
     buttons = list(map(lambda lev: types.KeyboardButton(text=lev.name), levels))
     markup.add(*buttons)
@@ -51,10 +49,9 @@ def entering_level(message):
     markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
 
     subs = subs_service.get_by_chat_id(message.chat.id)
-    levels = api.get_levels_by_alias(subs.division_alias)
-    programs = next(lev for lev in levels if lev.name == message.text).programs
+    level = spbu_service.get_level(subs.division_alias, subs.level)
 
-    buttons = list(map(lambda prog: types.KeyboardButton(text=prog.name), programs))
+    buttons = list(map(lambda prog: types.KeyboardButton(text=prog.name), level.programs))
     markup.add(*buttons)
 
     bot.send_message(message.chat.id, "Отлично! Программа", reply_markup=markup)
@@ -66,11 +63,9 @@ def entering_program(message):
     markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
 
     subs = subs_service.get_by_chat_id(message.chat.id)
-    levels = api.get_levels_by_alias(subs.division_alias)
-    programs = next(lev for lev in levels if lev.name == subs.level).programs
-    admissions = next(prog for prog in programs if prog.name == subs.program).admissions
+    program = spbu_service.get_program(subs.division_alias, subs.level, subs.program)
 
-    buttons = list(map(lambda adm: types.KeyboardButton(text=adm.year), admissions))
+    buttons = list(map(lambda adm: types.KeyboardButton(text=adm.year), program.admissions))
     markup.add(*buttons)
 
     bot.send_message(message.chat.id, "Отлично! Год", reply_markup=markup)
@@ -78,18 +73,13 @@ def entering_program(message):
 
 @bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_PROGRAM)
 def entering_year(message):
-    # TODO: сразу ставить program id
     subs = subs_service.get_by_chat_id(message.chat.id)
-    levels = api.get_levels_by_alias(subs.division_alias)
-    programs = next(lev for lev in levels if lev.name == subs.level).programs
-    admissions = next(prog for prog in programs if prog.name == subs.program).admissions
-    program_id = next(ad for ad in admissions if ad.year == message.text).program_id
-
-    subs_service.set_year(message.chat.id, message.text)
-    subs_service.set_program_id(message.chat.id, program_id)
+    admission = spbu_service.get_admission(subs.division_alias, subs.level, subs.program, message.text)
+    subs_service.set_year(message.chat.id, admission.year)
+    subs_service.set_program_id(message.chat.id, admission.program_id)
     markup = types.ReplyKeyboardMarkup(row_width=1, one_time_keyboard=True)
-    # TODO: иногда группы пустые
-    groups = api.get_groups_by_program_id(program_id)
+
+    groups = spbu_service.get_groups(admission.program_id)
     buttons = list(map(lambda gr: types.KeyboardButton(text=gr.name), groups))
     markup.add(*buttons)
 
@@ -99,10 +89,9 @@ def entering_year(message):
 @bot.message_handler(func=lambda message: subs_service.get_state(message.chat.id) == STATE.SAVED_PROGRAM_ID)
 def entering_group(message):
     subs = subs_service.get_by_chat_id(message.chat.id)
-    groups = api.get_groups_by_program_id(subs.program_id)
-    group_id = next(gr for gr in groups if gr.name == message.text).id
+    group = spbu_service.get_group(subs.program_id, message.text)
 
-    subs_service.set_group_id(message.chat.id, group_id)
+    subs_service.set_group_id(message.chat.id, group.id)
     bot.send_message(message.chat.id, "Отлично! Зареган")
 
 
