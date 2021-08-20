@@ -3,9 +3,8 @@ class STATE:
     SAVED_DIVISION = "1"
     SAVED_LEVEL = "2"
     SAVED_PROGRAM = "3"
-    SAVED_YEAR = "4"
-    SAVED_PROGRAM_ID = "5"
-    SAVED_GROUP = "6"
+    SAVED_PROGRAM_ID = "4"
+    SAVED_GROUP = "5"
 
 
 class Subscription:
@@ -19,7 +18,8 @@ class Subscription:
     group_id: int
 
     def __init__(self, chat_id: int = None, state: str = None, division_alias: str = None,
-                 level: str = None, program: str = None, year: str = None, program_id: int = None, group_id: int = 0):
+                 level: str = None, program: str = None, year: str = None, program_id: int = None,
+                 group_id: int = None):
         self.chat_id = chat_id
         self.state = state
         self.division_alias = division_alias

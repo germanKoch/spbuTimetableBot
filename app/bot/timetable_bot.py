@@ -1,12 +1,10 @@
-from datetime import date
-
 import telebot
 import telebot.types as types
 
 import app.config as config
 import app.usecase.bot_usecase as usecase
 from app.domain.subs_types import *
-from app.util.week_util import get_week_boundaries
+from app.domain.exception.not_found_exception import NotFoundException
 
 bot = telebot.TeleBot(config.TOKEN)
 
@@ -15,7 +13,7 @@ def start():
     bot.polling(none_stop=True)
 
 
-@bot.message_handler(commands=["start"])
+@bot.message_handler(commands=["start", "retry"])
 def cmd_start(message):
     divisions = usecase.start(message.chat.id)
 
@@ -25,36 +23,61 @@ def cmd_start(message):
 
 @bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.START))
 def entering_division(message):
-    levels = usecase.enter_division(message.chat.id, message.text)
-
-    bot.send_message(message.chat.id, "Отлично! Уровень", reply_markup=get_buttons(1, levels, lambda lev: lev.name))
+    try:
+        bot.send_message(message.chat.id, "Ищу твой факультет. Требуется немного подождать...")
+        levels = usecase.enter_division(message.chat.id, message.text)
+        bot.send_message(message.chat.id, "Выбери уровень: ", reply_markup=get_buttons(1, levels, lambda lev: lev.name))
+    except NotFoundException:
+        divisions = usecase.retry_enter_division(message.chat.id)
+        bot.send_message(message.chat.id, "Упс. Кажется, я не смог найти такой факультет. Попробуй ещё раз.",
+                         reply_markup=get_buttons(2, divisions, lambda div: div.name))
 
 
 @bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_DIVISION))
 def entering_level(message):
-    programs = usecase.enter_level(message.chat.id, message.text)
-
-    bot.send_message(message.chat.id, "Отлично! Программа", reply_markup=get_buttons(1, programs, lambda pr: pr.name))
+    try:
+        programs = usecase.enter_level(message.chat.id, message.text)
+        bot.send_message(message.chat.id, "Отлично! Программа",
+                         reply_markup=get_buttons(1, programs, lambda pr: pr.name))
+    except NotFoundException:
+        levels = usecase.retry_enter_level(message.chat.id)
+        bot.send_message(message.chat.id, "Упс. Кажется, я не смог найти такой уровень. Попробуй ещё раз.",
+                         reply_markup=get_buttons(1, levels, lambda div: div.name))
 
 
 @bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_LEVEL))
 def entering_program(message):
-    admissions = usecase.enter_program(message.chat.id, message.text)
-
-    bot.send_message(message.chat.id, "Отлично! Год", reply_markup=get_buttons(1, admissions, lambda ad: ad.year))
+    try:
+        admissions = usecase.enter_program(message.chat.id, message.text)
+        bot.send_message(message.chat.id, "Отлично! Год",
+                         reply_markup=get_buttons(1, admissions, lambda ad: ad.year))
+    except NotFoundException:
+        programs = usecase.retry_enter_program(message.chat.id)
+        bot.send_message(message.chat.id, "Упс. Кажется, я не смог найти такую программу. Попробуй ещё раз.",
+                         reply_markup=get_buttons(1, programs, lambda div: div.name))
 
 
 @bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_PROGRAM))
 def entering_year(message):
-    groups = usecase.enter_year(message.chat.id, message.text)
-
-    bot.send_message(message.chat.id, "Отлично! Группа", reply_markup=get_buttons(1, groups, lambda gr: gr.name))
+    try:
+        groups = usecase.enter_year(message.chat.id, message.text)
+        bot.send_message(message.chat.id, "Отлично! Группа",
+                         reply_markup=get_buttons(1, groups, lambda gr: gr.name))
+    except NotFoundException:
+        adms = usecase.retry_enter_year(message.chat.id)
+        bot.send_message(message.chat.id, "Упс. Кажется, я не смог найти такой год. Попробуй ещё раз.",
+                         reply_markup=get_buttons(1, adms, lambda div: div.year))
 
 
 @bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_PROGRAM_ID))
 def entering_group(message):
-    usecase.entering_group(message.chat.id, message.text)
-    bot.send_message(message.chat.id, "Отлично! Зареган")
+    try:
+        usecase.entering_group(message.chat.id, message.text)
+        bot.send_message(message.chat.id, "Отлично! Зареган")
+    except NotFoundException:
+        groups = usecase.retry_enter_group(message.chat.id)
+        bot.send_message(message.chat.id, "Упс. Кажется, я не смог найти такую группу. Попробуй ещё раз.",
+                         reply_markup=get_buttons(1, groups, lambda div: div.name))
 
 
 def get_buttons(row_width, items, mapper):
