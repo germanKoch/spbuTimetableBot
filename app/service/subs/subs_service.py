@@ -1,6 +1,5 @@
-from app.domain.subs_types import *
-from app.domain.exception.not_found_exception import NotFoundException
 import app.repository.subs.subs_repository as repository
+from app.domain.subs_types import *
 
 
 def map_subs(row) -> Subscription:
@@ -28,12 +27,3 @@ def get_by_chat_id(chat_id: int) -> Subscription:
 def update(subs: Subscription):
     subs_dict = vars(subs)
     repository.update_subs(subs_dict)
-
-
-def get_state(chat_id: int):
-    # TODO: ловить экспешен на урвоне usecase
-    try:
-        subs = repository.get_by_chat_id(chat_id)
-        return subs["state"]
-    except NotFoundException:
-        return None

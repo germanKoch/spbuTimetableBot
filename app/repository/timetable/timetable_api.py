@@ -24,6 +24,7 @@ def get_groups_by_program_id(program_id: int) -> List[Group]:
 
 def get_events(group_id: int, from_date: date, to_date: date):
     response = spbu.groups.get_group_events(group_id=group_id, from_date=from_date, to_date=to_date)
+    print(response.days)
     return list(map(map_day, response.days))
 
 

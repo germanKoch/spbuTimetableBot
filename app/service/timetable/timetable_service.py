@@ -1,4 +1,5 @@
 from typing import Dict
+from datetime import date
 
 import app.repository.timetable.timetable_api as api
 
@@ -85,3 +86,10 @@ def get_group(program_id: int, name: str):
         if group.name == name:
             return group
     raise NotFoundException("group not found")
+
+
+def get_events(group_id: int, from_date: date, to_date: date):
+    events = api.get_events(group_id, from_date, to_date)
+    if len(events) == 0:
+        raise NotFoundException("events ot found")
+    return events

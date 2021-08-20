@@ -1,8 +1,14 @@
+from datetime import date
+
 import app.service.subs.subs_service as subs_service
 import app.service.timetable.timetable_service as spbu_service
+from app.domain.exception.not_found_exception import NotFoundException
 from app.domain.subs_types import *
 from app.domain.timetable_types import *
+from app.util.week_util import get_week_boundaries
 
+
+# TODO: добавить проверку стэйтов
 
 def start(chat_id) -> List[Division]:
     subs_service.create_subs(Subscription(chat_id=chat_id, state=STATE.START))
@@ -81,5 +87,14 @@ def retry_enter_group(chat_id) -> List[Group]:
     return spbu_service.get_groups(subs.program_id)
 
 
+def get_events(chat_id, current_date: date) -> List[Day]:
+    subs = subs_service.get_by_chat_id(chat_id)
+    from_date, to_date = get_week_boundaries(current_date)
+    return spbu_service.get_events(subs.group_id, from_date, to_date)
+
+
 def check_state(chat_id, state):
-    return subs_service.get_state(chat_id) == state
+    try:
+        return subs_service.get_by_chat_id(chat_id).state == state
+    except NotFoundException:
+        return None
