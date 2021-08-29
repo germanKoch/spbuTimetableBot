@@ -1,5 +1,3 @@
-from datetime import date
-
 import telebot
 import telebot.types as types
 
@@ -83,12 +81,9 @@ def entering_group(message):
                          reply_markup=get_buttons(1, groups, lambda div: div.name))
 
 
-@bot.message_handler(commands=["week"])
-def get_week_events(message):
-    today = date(2021, 5, 11)
-    events = usecase.get_events(message.chat.id, today)
-
-    bot.send_message(message.chat.id, map_days(events))
+def send_day_events():
+    today = date(2021, 5, 12)
+    usecase.process_events(today, lambda chat_id, events: bot.send_message(chat_id, map_day(events)))
 
 
 def get_buttons(row_width, items, mapper):
@@ -98,14 +93,13 @@ def get_buttons(row_width, items, mapper):
     return markup
 
 
-def map_days(days: List[Day]) -> str:
+def map_day(day: Day) -> str:
     representation = str()
-    for day in days:
-        representation += '\n\n' + day.day_string + '\n\n'
-        for event in day.events:
-            representation += "Предмет: " + event.subject + "\n"
-            representation += "Преподаватели: " + event.educators + "\n"
-            representation += "Начало: " + event.start_datetime.time().isoformat()
-            representation += ", Конец: " + event.end_datetime.time().isoformat()
-            representation += "\n\n"
+    representation += '\n\n' + day.day_string + '\n\n'
+    for event in day.events:
+        representation += "Предмет: " + event.subject + "\n"
+        representation += "Преподаватели: " + event.educators + "\n"
+        representation += "Начало: " + event.start_datetime.time().isoformat()
+        representation += ", Конец: " + event.end_datetime.time().isoformat()
+        representation += "\n\n"
     return representation

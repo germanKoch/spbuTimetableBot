@@ -87,10 +87,14 @@ def retry_enter_group(chat_id) -> List[Group]:
     return spbu_service.get_groups(subs.program_id)
 
 
-def get_events(chat_id, current_date: date) -> List[Day]:
-    subs = subs_service.get_by_chat_id(chat_id)
+def process_events(current_date: date, callback):
     from_date, to_date = get_week_boundaries(current_date)
-    return spbu_service.get_events(subs.group_id, from_date, to_date)
+    subs = subs_service.get_all()
+    subs = list(filter(lambda sub: sub.state == STATE.SAVED_GROUP, subs))
+    for sub in subs:
+        days = spbu_service.get_events(sub.group_id, from_date, to_date)
+        events = next((day for day in days if day.day_date == current_date), None)
+        callback(sub.chat_id, events)
 
 
 def check_state(chat_id, state):

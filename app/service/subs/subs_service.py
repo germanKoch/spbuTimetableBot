@@ -15,6 +15,11 @@ def map_subs(row) -> Subscription:
     )
 
 
+def get_all():
+    rows = repository.get_all()
+    return list(map(map_subs, rows))
+
+
 def create_subs(subs: Subscription):
     subs_dict = vars(subs)
     repository.create_subs(subs_dict)

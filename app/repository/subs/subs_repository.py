@@ -5,6 +5,11 @@ from app.repository.connection import update_query
 table = "subscription"
 
 
+def get_all() -> dict:
+    query = f"SELECT * FROM {table}"
+    return get_row_query(query)
+
+
 def get_by_chat_id(chat_id: int) -> dict:
     query = f"SELECT * FROM {table} WHERE chat_id = %(chat_id)s"
     params = {'chat_id': chat_id}

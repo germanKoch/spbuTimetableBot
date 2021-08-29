@@ -9,3 +9,5 @@ DB_PORT = '5432'
 DB_SCHEMA = 'bot'
 DB_HOST = 'localhost'
 DB_MIGRATIONS_TABLE = 'migrations'
+
+SCHEDULER_TIME = "23:27"

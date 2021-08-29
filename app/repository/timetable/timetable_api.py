@@ -57,4 +57,4 @@ def map_event(event: GEEvent):
 
 def map_day(day: GEEventsDay):
     events = list(map(map_event, day.day_study_events))
-    return Day(day_string=day.day_string, events=events)
+    return Day(day_date=day.day, day_string=day.day_string, events=events)

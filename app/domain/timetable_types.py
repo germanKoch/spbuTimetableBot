@@ -1,4 +1,5 @@
 from datetime import datetime
+from datetime import date
 from typing import List
 
 
@@ -81,12 +82,14 @@ class Event:
 
 
 class Day:
+    day_date: date
     day_string: str
     events: List[Event]
 
-    def __init__(self, day_string, events):
+    def __init__(self, day_date, day_string, events):
+        self.day_date = day_date
         self.day_string = day_string
         self.events = events
 
     def __repr__(self):
-        return f"Day({self.day_string}, {self.events})"
+        return f"Day({self.day_date}, {self.day_string}, {self.events})"
