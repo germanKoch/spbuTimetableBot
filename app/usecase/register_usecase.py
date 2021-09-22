@@ -8,7 +8,7 @@ from app.domain.subs_types import *
 # TODO: добавить проверку стэйтов
 def start(chat_id) -> Response:
     subs_service.create_subs(Subscription(chat_id=chat_id, state=STATE.START))
-    text = f"Привет! Я бот расписаний. Выбери факультет"
+    text = "Выбери факультет."
     buttons = list(map(lambda division: division.name, spbu_service.get_divisions()))
     return Response(text, buttons)
 
