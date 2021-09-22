@@ -1,12 +1,10 @@
-import threading
-
-from urllib3.exceptions import ReadTimeoutError
-from app.logger_configurer import config_logger
 import logging
+import threading
 
 import app.bot.timetable_bot as bot
 import app.repository.migrations.migration_manager as migrations
 import app.scheduler.scheduler as scheduler
+from app.logger_configurer import config_logger
 
 log = logging.getLogger(__name__)
 

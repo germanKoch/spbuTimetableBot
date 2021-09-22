@@ -35,6 +35,8 @@ def filter_script(script, last_v):
 
 
 def execute_migrations():
+    query = f'CREATE SCHEMA IF NOT EXISTS {config.DB_SCHEMA}'
+    update_query(query)
     query = f'CREATE TABLE IF NOT EXISTS {config.DB_MIGRATIONS_TABLE} (id serial, version integer, is_executed boolean)'
     update_query(query)
 
