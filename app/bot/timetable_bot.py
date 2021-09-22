@@ -28,8 +28,8 @@ def get_day_events(message):
                      f"Привет! Я бот расписаний СПбГУ. Давай немного расскажу про себя. \n" \
                      f"Я буду присылать тебе расписание каждый день в {config.SCHEDULER_TIME}.\n" \
                      f"Доступные команды: \n" \
-                     f"\\day - получить расписание на день." \
-                     f"\\retry - пройти регистрацию заново, если что-то пойдёт не так.")
+                     f"\\day - получить расписание на день.\n" \
+                     f"\\retry - пройти регистрацию заново, если что-то пойдёт не так.\n")
     log.debug('get_day_events(chat_id=%s)', message.chat.id)
     day = event_usecase.get_day_events(message.chat.id, date.today())
     bot.send_message(message.chat.id, map_day(day))
