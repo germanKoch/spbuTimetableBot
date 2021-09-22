@@ -1,9 +1,9 @@
 import telebot
 import telebot.types as types
 import logging
-
+import app.usecase.get_events_usecase as event_usecase
 import app.config as config
-import app.usecase.bot_usecase as usecase
+import app.usecase.register_usecase as register_usecase
 from app.domain.subs_types import *
 from app.domain.timetable_types import *
 
@@ -18,56 +18,56 @@ def start():
 @bot.message_handler(commands=["start", "retry"])
 def cmd_start(message):
     log.debug('cmd_start(chat_id=%s)', message.chat.id)
-    response = usecase.start(message.chat.id)
+    response = register_usecase.start(message.chat.id)
     bot.send_message(message.chat.id, response.text, reply_markup=get_buttons(2, response.buttons))
 
 
 @bot.message_handler(commands=["day"])
 def get_day_events(message):
     log.debug('get_day_events(chat_id=%s)', message.chat.id)
-    day = usecase.get_day_events(message.chat.id, date.today())
+    day = event_usecase.get_day_events(message.chat.id, date.today())
     bot.send_message(message.chat.id, map_day(day))
 
 
-@bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.START))
+@bot.message_handler(func=lambda message: register_usecase.check_state(message.chat.id, STATE.START))
 def entering_division(message):
     log.debug('entering_division(chat_id=%s, division=%s)', message.chat.id, message.text)
     bot.send_message(message.chat.id, "Ищу твой факультет. Требуется немного подождать...")
-    response = usecase.enter_division(message.chat.id, message.text)
+    response = register_usecase.enter_division(message.chat.id, message.text)
     bot.send_message(message.chat.id, response.text, reply_markup=get_buttons(1, response.buttons))
 
 
-@bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_DIVISION))
+@bot.message_handler(func=lambda message: register_usecase.check_state(message.chat.id, STATE.SAVED_DIVISION))
 def entering_level(message):
     log.debug('entering_level(chat_id=%s, level=%s)', message.chat.id, message.text)
-    response = usecase.enter_level(message.chat.id, message.text)
+    response = register_usecase.enter_level(message.chat.id, message.text)
     bot.send_message(message.chat.id, response.text, reply_markup=get_buttons(1, response.buttons))
 
 
-@bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_LEVEL))
+@bot.message_handler(func=lambda message: register_usecase.check_state(message.chat.id, STATE.SAVED_LEVEL))
 def entering_program(message):
     log.debug('entering_program(chat_id=%s, program=%s)', message.chat.id, message.text)
-    response = usecase.enter_program(message.chat.id, message.text)
+    response = register_usecase.enter_program(message.chat.id, message.text)
     bot.send_message(message.chat.id, response.text, reply_markup=get_buttons(1, response.buttons))
 
 
-@bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_PROGRAM))
+@bot.message_handler(func=lambda message: register_usecase.check_state(message.chat.id, STATE.SAVED_PROGRAM))
 def entering_year(message):
     log.debug('entering_year(chat_id=%s, year=%s)', message.chat.id, message.text)
-    response = usecase.enter_year(message.chat.id, message.text)
+    response = register_usecase.enter_year(message.chat.id, message.text)
     bot.send_message(message.chat.id, response.text, reply_markup=get_buttons(1, response.buttons))
 
 
-@bot.message_handler(func=lambda message: usecase.check_state(message.chat.id, STATE.SAVED_PROGRAM_ID))
+@bot.message_handler(func=lambda message: register_usecase.check_state(message.chat.id, STATE.SAVED_PROGRAM_ID))
 def entering_group(message):
     log.debug('entering_group(chat_id=%s, group=%s)', message.chat.id, message.text)
-    response = usecase.entering_group(message.chat.id, message.text)
+    response = register_usecase.entering_group(message.chat.id, message.text)
     bot.send_message(message.chat.id, response.text, reply_markup=get_buttons(1, response.buttons))
 
 
 def send_day_events():
     today = date.today()
-    usecase.get_day_events_all(today, lambda chat_id, day: bot.send_message(chat_id, map_day(day)))
+    event_usecase.get_day_events_all(today, lambda chat_id, day: bot.send_message(chat_id, map_day(day)))
 
 
 def get_buttons(row_width, items):

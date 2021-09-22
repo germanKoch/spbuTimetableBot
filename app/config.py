@@ -12,4 +12,4 @@ DB_SCHEMA = 'bot'
 DB_HOST = 'localhost'
 DB_MIGRATIONS_TABLE = 'migrations'
 
-SCHEDULER_TIME = "14:00"
+SCHEDULER_TIME = "7:00"
