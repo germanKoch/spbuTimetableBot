@@ -1,8 +1,10 @@
 from app.domain.exception.not_found_exception import NotFoundException
 from app.repository.connection import get_row_query
 from app.repository.connection import update_query
+import logging
 
 table = "subscription"
+log = logging.getLogger(__name__)
 
 
 def get_all() -> dict:
@@ -14,6 +16,7 @@ def get_by_chat_id(chat_id: int) -> dict:
     query = f"SELECT * FROM {table} WHERE chat_id = %(chat_id)s"
     params = {'chat_id': chat_id}
     subs = get_row_query(query, params)
+    log.debug(query)
     if len(subs) == 0:
         raise NotFoundException("subs not found")
     return subs[0]

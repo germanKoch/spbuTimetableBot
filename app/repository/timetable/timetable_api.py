@@ -1,31 +1,34 @@
 import spbu
+import logging
 from spbu.types import *
-
 from app.domain.timetable_types import *
+
+log = logging.getLogger(__name__)
 
 
 def get_divisions() -> List[Division]:
     divisions = spbu.studydivisions.get_study_divisions()
-    print(divisions)
+    log.debug('get_divisions -> %s', divisions)
     return list(map(map_division, divisions))
 
 
 def get_levels_by_alias(alias: str) -> List[StudyLevel]:
     levels = spbu.studydivisions.get_study_levels(alias)
-    print(levels)
+    log.debug('get_levels_by_alias -> %s', levels)
     return list(map(map_level, levels))
 
 
 def get_groups_by_program_id(program_id: int) -> List[Group]:
     groups = spbu.programs.get_groups(program_id)
-    print(groups)
+    log.debug('get_groups_by_program_id -> %s', groups)
     return list(map(map_group, groups))
 
 
-def get_events(group_id: int, from_date: date, to_date: date):
+def get_events(group_id: int, from_date: date, to_date: date) -> List[Day]:
     response = spbu.groups.get_group_events(group_id=group_id, from_date=from_date, to_date=to_date)
-    print(response.days)
-    return list(map(map_day, response.days))
+    days = response.days
+    log.debug('get_events -> %s', days)
+    return list(map(map_day, days))
 
 
 def map_division(div: SDStudyDivision):

@@ -111,13 +111,16 @@ def entering_group(chat_id, group_name) -> Response:
         return Response(text, buttons)
 
 
-def process_events(current_date: date, callback):
-    from_date, to_date = get_week_boundaries(current_date)
+def get_day_events(chat_id, current_date) -> Day:
+    subs = subs_service.get_by_chat_id(chat_id)
+    return _get_day_events(current_date, subs.group_id)
+
+
+def get_day_events_all(current_date: date, callback):
     subs = subs_service.get_all()
     subs = list(filter(lambda sub: sub.state == STATE.SAVED_GROUP, subs))
     for sub in subs:
-        days = spbu_service.get_events(sub.group_id, from_date, to_date)
-        events = next((day for day in days if day.day_date == current_date), None)
+        events = _get_day_events(current_date, sub.group_id)
         callback(sub.chat_id, events)
 
 
@@ -126,3 +129,9 @@ def check_state(chat_id, state):
         return subs_service.get_by_chat_id(chat_id).state == state
     except NotFoundException:
         return None
+
+
+def _get_day_events(current_date, group_id):
+    from_date, to_date = get_week_boundaries(current_date)
+    days = spbu_service.get_events(group_id, from_date, to_date)
+    return next((day for day in days if day.day_date == current_date), None)

@@ -1,3 +1,4 @@
+import logging
 from contextlib import closing
 from typing import List
 
@@ -5,6 +6,8 @@ import psycopg2
 from psycopg2.extras import DictCursor
 
 import app.config as config
+
+log = logging.getLogger(__name__)
 
 
 def get_conn():
@@ -20,6 +23,7 @@ def get_conn():
 
 
 def get_row_query(query, parameters=None):
+    log.debug(query)
     with closing(get_conn()) as conn:
         with conn.cursor() as cursor:
             if parameters:
@@ -31,6 +35,7 @@ def get_row_query(query, parameters=None):
 
 
 def update_query(query, parameters=None):
+    log.debug(query)
     with closing(get_conn()) as conn:
         with conn.cursor() as cursor:
             if parameters:
@@ -41,6 +46,7 @@ def update_query(query, parameters=None):
 
 
 def update_queries(queries: List[str]):
+    log.debug(queries)
     with closing(get_conn()) as conn:
         with conn.cursor() as cursor:
             for query in queries:
