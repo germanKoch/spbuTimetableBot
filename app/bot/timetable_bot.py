@@ -21,8 +21,8 @@ def cmd_start(message):
                      f"Привет! Я бот расписаний СПбГУ. Давай немного расскажу про себя. \n"
                      f"Я буду присылать тебе расписание каждый день в {config.SCHEDULER_TIME}.\n"
                      f"Доступные команды: \n"
-                     f"\\day - получить расписание на день.\n"
-                     f"\\retry - пройти регистрацию заново, если что-то пойдёт не так.\n")
+                     f"/day - получить расписание на день.\n"
+                     f"/retry - пройти регистрацию заново, если что-то пойдёт не так.\n")
     log.debug('cmd_start(chat_id=%s)', message.chat.id)
     response = register_usecase.start(message.chat.id)
     bot.send_message(message.chat.id, response.text, reply_markup=get_buttons(2, response.buttons))
