@@ -98,7 +98,7 @@ def entering_group(chat_id, group_name) -> Response:
         subs.state = STATE.SAVED_GROUP
         subs_service.update(subs)
 
-        text = "Отлично! Зареган"
+        text = "Отлично! Теперь я подключил тебя к рассылке расписания."
         buttons = list()
         return Response(text, buttons)
     except NotFoundException:

@@ -1,4 +1,5 @@
 import os
+import datetime as dt
 
 LOGGING_LEVEL = 'DEBUG'
 
@@ -14,4 +15,5 @@ DB_SCHEMA = os.environ['DB_SCHEMA']
 DB_HOST = os.environ['DB_HOST']
 DB_MIGRATIONS_TABLE = 'migrations'
 
-SCHEDULER_TIME = '07:00'
+TIME_ZONE = "3"
+SCHEDULER_TIME = "07:00"

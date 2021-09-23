@@ -31,7 +31,7 @@ def cmd_start(message):
 @bot.message_handler(commands=["day"])
 def get_day_events(message):
     log.debug('get_day_events(chat_id=%s)', message.chat.id)
-    day = event_usecase.get_day_events(message.chat.id, date.today())
+    day = event_usecase.get_day_events(message.chat.id)
     bot.send_message(message.chat.id, map_day(day))
 
 
@@ -72,8 +72,7 @@ def entering_group(message):
 
 
 def send_day_events():
-    today = date.today()
-    event_usecase.get_day_events_all(today, lambda chat_id, day: bot.send_message(chat_id, map_day(day)))
+    event_usecase.get_day_events_all(lambda chat_id, day: bot.send_message(chat_id, map_day(day)))
 
 
 def get_buttons(row_width, items):
