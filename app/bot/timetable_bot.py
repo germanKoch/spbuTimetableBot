@@ -2,7 +2,7 @@ import logging
 
 import telebot
 import telebot.types as types
-
+import datetime as dt
 import app.config as config
 import app.usecase.get_events_usecase as event_usecase
 import app.usecase.register_usecase as register_usecase
@@ -34,6 +34,12 @@ def get_day_events(message):
     log.debug('get_day_events(chat_id=%s)', message.chat.id)
     response = event_usecase.get_day_events(message.chat.id)
     bot.send_message(message.chat.id, response.text)
+
+
+@bot.message_handler(commands=["time"])
+def get_day_events(message):
+    log.debug('get_day_events(chat_id=%s)', message.chat.id)
+    bot.send_message(message.chat.id, dt.datetime.now().isoformat())
 
 
 @bot.message_handler(func=lambda message: register_usecase.check_state(message.chat.id, STATE.START))
