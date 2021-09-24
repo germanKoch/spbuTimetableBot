@@ -3,7 +3,7 @@ import threading
 
 import app.bot.timetable_bot as bot
 import app.repository.migrations.migration_manager as migrations
-import app.scheduler.scheduler as scheduler
+import app.botscheduler.bot_scheduler as scheduler
 from app.logger_configurer import config_logger
 
 log = logging.getLogger(__name__)

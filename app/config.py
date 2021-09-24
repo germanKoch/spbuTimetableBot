@@ -15,5 +15,6 @@ DB_SCHEMA = os.environ['DB_SCHEMA']
 DB_HOST = os.environ['DB_HOST']
 DB_MIGRATIONS_TABLE = 'migrations'
 
-TIME_ZONE = "3"
-SCHEDULER_TIME = "07:00"
+SERVER_TIME_ZONE = '3'
+TIME_ZONE = '3'
+SCHEDULER_TIME = os.environ.get('SCHEDULER_TIME', '18:38')

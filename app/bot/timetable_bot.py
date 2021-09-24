@@ -1,11 +1,12 @@
+import logging
+
 import telebot
 import telebot.types as types
-import logging
-import app.usecase.get_events_usecase as event_usecase
+
 import app.config as config
+import app.usecase.get_events_usecase as event_usecase
 import app.usecase.register_usecase as register_usecase
 from app.domain.subs_types import *
-from app.domain.timetable_types import *
 
 bot = telebot.TeleBot(config.TOKEN)
 log = logging.getLogger(__name__)
@@ -31,8 +32,8 @@ def cmd_start(message):
 @bot.message_handler(commands=["day"])
 def get_day_events(message):
     log.debug('get_day_events(chat_id=%s)', message.chat.id)
-    day = event_usecase.get_day_events(message.chat.id)
-    bot.send_message(message.chat.id, map_day(day))
+    response = event_usecase.get_day_events(message.chat.id)
+    bot.send_message(message.chat.id, response.text)
 
 
 @bot.message_handler(func=lambda message: register_usecase.check_state(message.chat.id, STATE.START))
@@ -72,7 +73,8 @@ def entering_group(message):
 
 
 def send_day_events():
-    event_usecase.get_day_events_all(lambda chat_id, day: bot.send_message(chat_id, map_day(day)))
+    log.debug('send_day_events()')
+    event_usecase.get_day_events_all(bot.send_message)
 
 
 def get_buttons(row_width, items):
@@ -80,15 +82,3 @@ def get_buttons(row_width, items):
     buttons = list(map(lambda item: types.KeyboardButton(text=item), items))
     markup.add(*buttons)
     return markup
-
-
-def map_day(day: Day) -> str:
-    representation = str()
-    representation += '\n\n' + day.day_string + '\n\n'
-    for event in day.events:
-        representation += "Предмет: " + event.subject + "\n"
-        representation += "Преподаватели: " + event.educators + "\n"
-        representation += "Начало: " + event.start_datetime.time().isoformat()
-        representation += ", Конец: " + event.end_datetime.time().isoformat()
-        representation += "\n\n"
-    return representation

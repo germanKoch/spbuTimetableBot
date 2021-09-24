@@ -4,7 +4,7 @@ idna==3.2
 psycopg2-binary==2.9.1
 pyTelegramBotAPI==3.8.2
 requests==2.26.0
-scheduler==0.6.1
+schedule==1.1.0
 spbuTimetableAPI==1.0.3
 typeguard==2.12.1
 urllib3==1.26.6
