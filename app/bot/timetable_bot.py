@@ -26,7 +26,8 @@ def cmd_start(message):
                      f"/day - получить расписание на день.\n"
                      f"/retry - пройти регистрацию заново, если что-то пойдёт не так.\n"
                      f"/unsubscribe - отписаться от рассылки.\n"
-                     f"/subscribe - подписаться повторно.\n")
+                     f"/subscribe - подписаться повторно.\n"
+                     f"/commands - узнать доступные команды.\n")
     log.debug('cmd_start(chat_id=%s)', message.chat.id)
     response = register_usecase.start(message.chat.id)
     bot.send_message(message.chat.id, response.text, reply_markup=_get_buttons(2, response.buttons))
@@ -88,6 +89,17 @@ def get_day_events(message):
     log.debug('get_day_events(chat_id=%s)', message.chat.id)
     response = event_usecase.get_day_events(message.chat.id)
     bot.send_message(message.chat.id, response.text)
+
+
+@bot.message_handler(commands=["commands"])
+def get_commands(message):
+    log.debug('get_commands(chat_id=%s)', message.chat.id)
+    bot.send_message(message.chat.id, f"Доступные команды: \n"
+                                      f"/day - получить расписание на день.\n"
+                                      f"/retry - пройти регистрацию заново, если что-то пойдёт не так.\n"
+                                      f"/unsubscribe - отписаться от рассылки.\n"
+                                      f"/subscribe - подписаться повторно.\n"
+                                      f"/commands - узнать доступные команды.\n")
 
 
 def send_day_events():
