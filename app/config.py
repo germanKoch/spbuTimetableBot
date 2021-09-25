@@ -15,5 +15,7 @@ DB_SCHEMA = os.environ['DB_SCHEMA']
 DB_HOST = os.environ['DB_HOST']
 DB_MIGRATIONS_TABLE = 'migrations'
 
+ADMIN_PASS = os.environ['ADMIN_PASS']
+
 TIME_ZONE = os.environ.get('TIME_ZONE', '3')
 SCHEDULER_TIME = os.environ.get('SCHEDULER_TIME', '02:19')

@@ -16,10 +16,11 @@ class Subscription:
     year: str
     program_id: int
     group_id: int
+    is_active: bool
 
     def __init__(self, chat_id: int = None, state: str = None, division_alias: str = None,
                  level: str = None, program: str = None, year: str = None, program_id: int = None,
-                 group_id: int = None):
+                 group_id: int = None, is_active: bool = None):
         self.chat_id = chat_id
         self.state = state
         self.division_alias = division_alias
@@ -28,6 +29,7 @@ class Subscription:
         self.year = year
         self.program_id = program_id
         self.group_id = group_id
+        self.is_active = is_active
 
     def __repr__(self):
         return f"Subscription({self.chat_id}, {self.state}, {self.division_alias},{self.level}, {self.program} ,{self.year}, {self.group_id} )"

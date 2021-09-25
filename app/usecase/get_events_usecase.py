@@ -18,7 +18,7 @@ def get_day_events(chat_id) -> Response:
 
 def get_day_events_all(callback):
     subs = subs_service.get_all()
-    subs = list(filter(lambda sub: sub.state == STATE.SAVED_GROUP, subs))
+    subs = list(filter(lambda sub: sub.state == STATE.SAVED_GROUP and sub.is_active, subs))
     for sub in subs:
         day = _get_day_events(_get_current_date(), sub.group_id)
         text = _get_text(day)

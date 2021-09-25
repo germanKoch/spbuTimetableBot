@@ -7,7 +7,7 @@ from app.domain.subs_types import *
 
 # TODO: добавить проверку стэйтов
 def start(chat_id) -> Response:
-    subs_service.create_subs(Subscription(chat_id=chat_id, state=STATE.START))
+    subs_service.create_subs(Subscription(chat_id=chat_id, state=STATE.START, is_active=True))
     text = "Выбери факультет."
     buttons = list(map(lambda division: division.name, spbu_service.get_divisions()))
     return Response(text, buttons)
@@ -107,6 +107,21 @@ def entering_group(chat_id, group_name) -> Response:
         text = "Упс. Кажется, я не смог найти такую группу. Попробуй ещё раз."
         buttons = list(map(lambda group: group.name, groups))
         return Response(text, buttons)
+
+
+def unsubscribe(chat_id) -> Response:
+    subs = subs_service.get_by_chat_id(chat_id)
+    subs.is_active = False
+    subs_service.update(subs)
+    return Response(text='Вы отписались от рассылки расписания. Если вы передумаете, введите команду /subscribe',
+                    buttons=[])
+
+
+def subscribe(chat_id):
+    subs = subs_service.get_by_chat_id(chat_id)
+    subs.is_active = True
+    subs_service.update(subs)
+    return Response(text='Вы подписались на рассылку.', buttons=[])
 
 
 def check_state(chat_id, state):
