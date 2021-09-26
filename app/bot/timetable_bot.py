@@ -1,4 +1,5 @@
 import logging
+from datetime import timedelta
 
 import telebot
 import telebot.types as types
@@ -6,6 +7,7 @@ import telebot.types as types
 import app.config as config
 import app.usecase.get_events_usecase as event_usecase
 import app.usecase.register_usecase as register_usecase
+import app.util.time_util as time_util
 from app.domain.subs_types import *
 
 bot = telebot.TeleBot(config.TOKEN)
@@ -27,7 +29,8 @@ def cmd_start(message):
                      f"/retry - пройти регистрацию заново, если что-то пойдёт не так.\n"
                      f"/unsubscribe - отписаться от рассылки.\n"
                      f"/subscribe - подписаться повторно.\n"
-                     f"/commands - узнать доступные команды.\n")
+                     f"/commands - узнать доступные команды.\n"
+                     f"/tom - получить расписание на завтра.\n")
     log.debug('cmd_start(chat_id=%s)', message.chat.id)
     response = register_usecase.start(message.chat.id)
     bot.send_message(message.chat.id, response.text, reply_markup=_get_buttons(2, response.buttons))
@@ -87,7 +90,15 @@ def subscribe(message):
 @bot.message_handler(commands=["day"])
 def get_day_events(message):
     log.debug('get_day_events(chat_id=%s)', message.chat.id)
-    response = event_usecase.get_day_events(message.chat.id)
+    response = event_usecase.get_day_events(time_util.get_current_date(), message.chat.id)
+    bot.send_message(message.chat.id, response.text)
+
+
+@bot.message_handler(commands=["tom"])
+def get_tomorrow_events(message):
+    log.debug('get_tomorrow_events(chat_id=%s)', message.chat.id)
+    day = time_util.get_current_date() + timedelta(days=1)
+    response = event_usecase.get_day_events(day, message.chat.id)
     bot.send_message(message.chat.id, response.text)
 
 
@@ -99,7 +110,8 @@ def get_commands(message):
                                       f"/retry - пройти регистрацию заново, если что-то пойдёт не так.\n"
                                       f"/unsubscribe - отписаться от рассылки.\n"
                                       f"/subscribe - подписаться повторно.\n"
-                                      f"/commands - узнать доступные команды.\n")
+                                      f"/commands - узнать доступные команды.\n"
+                                      f"/tom - получить расписание на завтра.\n")
 
 
 def send_day_events():
