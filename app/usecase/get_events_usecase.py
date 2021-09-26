@@ -40,7 +40,7 @@ def _get_text(day: Day) -> str:
     if day is not None and len(day.events) > 0:
         return _map_day(day)
     else:
-        return f'Кажется, пар нету. Можно отдохнуть)'
+        return f'Кажется, пар нет. Можно отдохнуть)'
 
 
 def _map_day(day: Day) -> str:

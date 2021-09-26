@@ -11,7 +11,8 @@ def map_subs(row) -> Subscription:
         program=row["program"],
         year=row["year"],
         program_id=row["program_id"],
-        group_id=row["group_id"]
+        group_id=row["group_id"],
+        is_active=row["is_active"]
     )
 
 

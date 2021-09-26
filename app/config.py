@@ -1,9 +1,8 @@
 import os
-import datetime as dt
 
 LOGGING_LEVEL = 'DEBUG'
 
-TOKEN = '1907978319:AAF9ObvJwFekyuFQwuJJTCsS64VI9NTR9Dg'
+TOKEN = os.environ['TOKEN']
 
 SPBU_TT_API_REQUEST_TIMEOUT = os.environ['SPBU_TT_API_REQUEST_TIMEOUT']
 
@@ -18,4 +17,4 @@ DB_MIGRATIONS_TABLE = 'migrations'
 ADMIN_PASS = os.environ['ADMIN_PASS']
 
 TIME_ZONE = os.environ.get('TIME_ZONE', '3')
-SCHEDULER_TIME = os.environ.get('SCHEDULER_TIME', '02:19')
+SCHEDULER_TIME = os.environ.get('SCHEDULER_TIME', '23:18')
