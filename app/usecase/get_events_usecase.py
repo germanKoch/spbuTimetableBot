@@ -11,9 +11,12 @@ from app.util.time_util import get_week_boundaries
 
 def get_day_events(day, chat_id) -> Response:
     subs = subs_service.get_by_chat_id(chat_id)
-    day = _get_day_events(day, subs.group_id)
-    text = _get_text(day)
-    return Response(text=text, buttons=[])
+    if subs.state == STATE.SAVED_GROUP:
+        day = _get_day_events(day, subs.group_id)
+        text = _get_text(day)
+        return Response(text=text, buttons=[])
+    else:
+        return Response(text='Для начала требуется пройти регистрацию =). Вызови команду /start', buttons=[])
 
 
 def get_day_events_all(callback):
